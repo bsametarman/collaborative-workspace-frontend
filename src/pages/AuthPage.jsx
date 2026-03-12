@@ -13,7 +13,7 @@ const AuthPage = () => {
         try {
             const token = await loginUser(username, password);
             localStorage.setItem("jwt", token);
-            navigate("/workspace");
+            navigate("/workspace/123e4567-e89b-12d3-a456-426614174000");
         } catch (error) {
             console.error(error);
             alert("Login failed. Check credentials.");
