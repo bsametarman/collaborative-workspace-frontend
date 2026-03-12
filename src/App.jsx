@@ -10,7 +10,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<AuthPage />} />
-          <Route path="/workspace" element={<WorkspacePage />} />
+          <Route path="/workspace/:documentId" element={<WorkspacePage />} />
         </Routes>
       </BrowserRouter>
     </div>
