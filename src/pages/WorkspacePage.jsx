@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SockJS from 'sockjs-client';
 import { getInitialDocument } from '../services/shapshotService';
 import './Workspace.css';
+import { shareDocument } from '../services/documentService';
 
 const WorkspacePage = () => {
     const navigate = useNavigate();
@@ -11,7 +12,20 @@ const WorkspacePage = () => {
     const [stompClient, setStompClient] = useState(null);
     const [position, setPosition] = useState(0);
     const { documentId } = useParams();
-    const myUserId = useRef(crypto.randomUUID()).current;
+    const token = localStorage.getItem("jwt");
+    let realUserId = null;
+    const [shareUserId, setShareUserId] = useState("");
+    
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            realUserId = payload.userId;
+        } catch (error) {
+            console.error("Failed to decode JWT:", error);
+        }
+    }
+
+    const myUserId = useRef(realUserId).current;
 
     useEffect(() => {
         const token = localStorage.getItem("jwt");
@@ -26,6 +40,8 @@ const WorkspacePage = () => {
                 const response = await getInitialDocument(documentId);
                 setDocumentText(response);
                 setPosition(response.length);
+                console.warn(myUserId);
+                console.warn(documentId);
             } catch (error) {
                 console.error("Failed to load initial document:", error);
             }
@@ -64,6 +80,18 @@ const WorkspacePage = () => {
         };
 
     }, [navigate, documentId, myUserId]);
+
+    const handleShare = async () => {
+        if (!shareUserId.trim()) return;
+        try {
+            shareDocument(documentId, shareUserId, token);            
+            alert("Success! Your friend can now join this document.");
+            setShareUserId("");
+        } catch (error) {
+            console.error("Share failed:", error);
+            alert(error.response?.data || "Failed to share document.");
+        }
+    };
 
     const handleTyping = (e) => {
         const newText = e.target.value;
@@ -113,7 +141,21 @@ const WorkspacePage = () => {
         <div className="workspace-container">
             <header className="workspace-header">
                 <h2>Collaborative Workspace</h2>
-                <button className="logout-btn" onClick={logout}>Logout</button>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input 
+                        type="text" 
+                        placeholder="Paste Friend's UUID..." 
+                        value={shareUserId}
+                        onChange={(e) => setShareUserId(e.target.value)}
+                        style={{ padding: '6px', borderRadius: '4px', border: 'none', width: '250px' }}
+                    />
+                    <button 
+                        onClick={handleShare}
+                        style={{ padding: '6px 12px', cursor: 'pointer', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
+                        Share
+                    </button>
+                    <button className="logout-btn" onClick={logout}>Logout</button>
+                </div>
             </header>
             
             <main className="editor-wrapper">
