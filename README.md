@@ -36,4 +36,4 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 ## Demo Video
 
-<video src="./.github/assets/demo.mp4" width="100%" autoplay loop muted playsinline></video>
+![Demo](./.github/assets/demo.png)
