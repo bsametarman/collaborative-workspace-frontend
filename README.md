@@ -33,3 +33,7 @@ Follow these instructions to get a copy of the project up and running on your lo
    npm install
    
    npm start / npm run dev
+
+## Demo Video
+
+<video src="./.github/assets/demo.mp4" width="100%" autoplay loop muted playsinline></video>
