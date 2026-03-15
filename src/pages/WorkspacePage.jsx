@@ -140,7 +140,13 @@ const WorkspacePage = () => {
     return(
         <div className="workspace-container">
             <header className="workspace-header">
-                <h2>Collaborative Workspace</h2>
+                <h2 
+                    className="header-logo" 
+                    onClick={() => navigate('/dashboard')}
+                    title="Return to Dashboard"
+                >
+                    Collaborative Workspace
+                </h2>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     <input 
                         type="text" 
